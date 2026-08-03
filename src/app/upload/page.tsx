@@ -15,6 +15,7 @@ export default function UploadPage() {
   const [images, setImages] = useState<{ id: string; url: string; file: File }[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
   
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -126,6 +127,14 @@ export default function UploadPage() {
             accept="image/jpeg,image/png,image/heic" 
             multiple
           />
+          <input 
+            type="file" 
+            ref={cameraInputRef} 
+            onChange={handleFileInput} 
+            className="hidden" 
+            accept="image/jpeg,image/png,image/heic" 
+            capture="environment"
+          />
           
           <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center mb-6">
             <UploadCloud className="h-10 w-10 text-primary" />
@@ -137,8 +146,7 @@ export default function UploadPage() {
             <Button onClick={() => fileInputRef.current?.click()} variant="secondary">
               <ImageIcon className="mr-2 h-4 w-4" /> Browse Files
             </Button>
-            {/* On mobile, capture="environment" opens camera directly if we use it, but keeping it standard is safer for compatibility. */}
-            <Button onClick={() => fileInputRef.current?.click()} variant="outline">
+            <Button onClick={() => cameraInputRef.current?.click()} variant="outline">
               <Camera className="mr-2 h-4 w-4" /> Use Camera
             </Button>
           </div>
