@@ -18,9 +18,9 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-md border-b border-border/40">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 group">
-          <img src="/logo.png" alt="NutriSense Logo" className="h-8 w-8 object-contain transition-transform group-hover:scale-105 rounded-full" />
-          <span className="font-heading font-medium tracking-wide text-foreground">NutriSense</span>
+        <Link href="/" className="flex items-center gap-4 group">
+          <img src="/logo.png" alt="NutriSense Logo" className="h-14 w-14 object-cover transition-transform group-hover:scale-105 rounded-full" />
+          <span className="font-heading font-medium text-xl tracking-wide text-foreground">NutriSense</span>
         </Link>
         
         <div className="flex items-center space-x-6">
