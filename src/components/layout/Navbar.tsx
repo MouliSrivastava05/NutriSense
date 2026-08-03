@@ -4,6 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import { Great_Vibes } from "next/font/google";
+
+const cursiveFont = Great_Vibes({ 
+  weight: "400",
+  subsets: ["latin"],
+});
 
 export function Navbar() {
   const pathname = usePathname();
@@ -20,7 +26,7 @@ export function Navbar() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-4 group">
           <img src="/logo.png" alt="NutriSense Logo" className="h-14 w-14 object-cover transition-transform group-hover:scale-105 rounded-full" />
-          <span className="font-heading font-medium text-xl tracking-wide text-foreground">NutriSense</span>
+          <span className={cn("font-medium text-3xl tracking-wide text-primary", cursiveFont.className)}>NutriSense</span>
         </Link>
         
         <div className="flex items-center space-x-6">
