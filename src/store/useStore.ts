@@ -119,6 +119,9 @@ export const useStore = create<AppState>()(
     }),
     {
       name: 'nutrisense-storage',
+      partialize: (state) => Object.fromEntries(
+        Object.entries(state).filter(([key]) => key !== 'currentImages')
+      ) as AppState,
     }
   )
 );
