@@ -65,6 +65,7 @@ interface AppState {
   // History
   history: AnalysisResult[];
   addHistory: (result: AnalysisResult) => void;
+  updateResult: (id: string, updates: Partial<AnalysisResult>) => void;
   deleteHistory: (id: string) => void;
   clearHistory: () => void;
   
@@ -100,6 +101,9 @@ export const useStore = create<AppState>()(
       
       history: [],
       addHistory: (result) => set((state) => ({ history: [result, ...state.history] })),
+      updateResult: (id, updates) => set((state) => ({
+        history: state.history.map(h => h.id === id ? { ...h, ...updates } : h)
+      })),
       deleteHistory: (id) => set((state) => ({ history: state.history.filter(h => h.id !== id) })),
       clearHistory: () => set({ history: [] }),
       

@@ -3,10 +3,11 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { ArrowLeft, ChevronDown } from "lucide-react";
+import { ArrowLeft, ChevronDown, Pencil, Check, X } from "lucide-react";
 import { useStore } from "@/store/useStore";
 
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants, Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -56,15 +57,26 @@ function ResultsContent() {
   const router = useRouter();
   const id = searchParams.get("id");
   const history = useStore((state) => state.history);
+  const updateResult = useStore((state) => state.updateResult);
   const [mounted, setMounted] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editBrand, setEditBrand] = useState("");
+  const [editName, setEditName] = useState("");
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null;
-
   const result = history.find(h => h.id === id);
+
+  useEffect(() => {
+    if (result) {
+      setEditBrand(result.brand);
+      setEditName(result.productName);
+    }
+  }, [result]);
+
+  if (!mounted) return null;
 
   if (!result) {
     return (
@@ -85,8 +97,51 @@ function ResultsContent() {
         
         {/* Left Column: Overview */}
         <div className="lg:col-span-5 flex flex-col items-center lg:items-start text-center lg:text-left">
-          <p className="text-sm uppercase tracking-widest text-muted-foreground mb-2">{result.brand}</p>
-          <h1 className="font-heading text-3xl sm:text-4xl leading-tight mb-12">{result.productName}</h1>
+          {isEditing ? (
+            <div className="mb-12 w-full max-w-sm space-y-3">
+              <div>
+                <label className="text-xs uppercase tracking-widest text-muted-foreground mb-1 block">Brand</label>
+                <Input 
+                  value={editBrand} 
+                  onChange={(e) => setEditBrand(e.target.value)} 
+                  placeholder="Enter brand name"
+                />
+              </div>
+              <div>
+                <label className="text-xs uppercase tracking-widest text-muted-foreground mb-1 block">Product Name</label>
+                <Input 
+                  value={editName} 
+                  onChange={(e) => setEditName(e.target.value)} 
+                  placeholder="Enter product name"
+                />
+              </div>
+              <div className="flex gap-2 pt-2">
+                <Button size="sm" onClick={() => {
+                  if (id) {
+                    updateResult(id, { brand: editBrand, productName: editName });
+                    setIsEditing(false);
+                  }
+                }}>
+                  <Check className="h-4 w-4 mr-2" /> Save
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => setIsEditing(false)}>
+                  <X className="h-4 w-4 mr-2" /> Cancel
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="mb-12 group/header relative">
+              <p className="text-sm uppercase tracking-widest text-muted-foreground mb-2">{result.brand}</p>
+              <h1 className="font-heading text-3xl sm:text-4xl leading-tight pr-8">{result.productName}</h1>
+              <button 
+                onClick={() => setIsEditing(true)}
+                className="absolute top-0 right-0 p-2 text-muted-foreground opacity-0 group-hover/header:opacity-100 transition-opacity hover:text-primary"
+                title="Edit Product Info"
+              >
+                <Pencil className="h-4 w-4" />
+              </button>
+            </div>
+          )}
           
           <div className="mb-12 flex justify-center w-full lg:justify-start">
             <ScoreRing score={result.overallScore} />
