@@ -36,17 +36,6 @@ export default function SettingsPage() {
 
   if (!mounted) return null;
 
-  const handleSaveApiKey = () => {
-    setGeminiApiKey(apiKeyInput);
-    if (apiKeyInput) {
-      toast.success("API Key saved securely to your browser.");
-      setDemoMode(false);
-    } else {
-      toast.success("API Key removed. Demo mode activated.");
-      setDemoMode(true);
-    }
-  };
-
   const handleResetApp = () => {
     if (window.confirm("Are you sure you want to reset the entire application? This will delete your profile, history, and settings.")) {
       resetApp();
@@ -65,92 +54,7 @@ export default function SettingsPage() {
       </div>
 
       <div className="space-y-6">
-        {/* API Key Settings */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Key className="h-5 w-5 text-muted-foreground" /> Gemini API Integration
-              </CardTitle>
-              <CardDescription>
-                Provide your Gemini API key to enable live AI analysis. Without a key, the app runs in Demo Mode with mock data.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between p-4 border rounded-lg bg-muted/20">
-                <div className="space-y-0.5">
-                  <Label>Demo Mode</Label>
-                  <p className="text-sm text-muted-foreground">
-                    {demoMode ? "Enabled. Using mock product data." : "Disabled. Using live Gemini API."}
-                  </p>
-                </div>
-                <Switch 
-                  checked={demoMode} 
-                  onCheckedChange={(checked) => {
-                    setDemoMode(checked);
-                    if (checked) toast.info("Demo Mode activated");
-                    else if (!geminiApiKey) {
-                      toast.error("Please enter an API key first");
-                      setDemoMode(true);
-                    }
-                  }} 
-                />
-              </div>
 
-              <div className="space-y-2 pt-2">
-                <Label htmlFor="api-key">API Key (Stored only in your browser)</Label>
-                <div className="flex gap-2">
-                  <Input 
-                    id="api-key" 
-                    type="password" 
-                    placeholder="AIzaSy..." 
-                    value={apiKeyInput}
-                    onChange={(e) => setApiKeyInput(e.target.value)}
-                  />
-                  <Button onClick={handleSaveApiKey}>Save</Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-
-        {/* Appearance Settings */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Moon className="h-5 w-5 text-muted-foreground" /> Appearance
-              </CardTitle>
-              <CardDescription>Customize the look and feel of NutriSense.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label>Theme</Label>
-                  <p className="text-sm text-muted-foreground">Select your preferred theme.</p>
-                </div>
-                <div className="flex items-center gap-2 border rounded-full p-1 bg-muted/20">
-                  <Button 
-                    variant={theme === "light" ? "secondary" : "ghost"} 
-                    size="sm" 
-                    className="rounded-full h-8"
-                    onClick={() => setTheme("light")}
-                  >
-                    <Sun className="h-4 w-4 mr-2" /> Light
-                  </Button>
-                  <Button 
-                    variant={theme === "dark" ? "secondary" : "ghost"} 
-                    size="sm" 
-                    className="rounded-full h-8"
-                    onClick={() => setTheme("dark")}
-                  >
-                    <Moon className="h-4 w-4 mr-2" /> Dark
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
 
         {/* Data Management */}
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>

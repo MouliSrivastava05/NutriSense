@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Leaf } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -20,7 +19,7 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full bg-background/80 backdrop-blur-md border-b border-border/40">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 group">
-          <Leaf className="h-5 w-5 text-primary transition-transform group-hover:scale-110" />
+          <img src="/logo.png" alt="NutriSense Logo" className="h-8 w-8 object-contain transition-transform group-hover:scale-105 rounded-full" />
           <span className="font-heading font-medium tracking-wide text-foreground">NutriSense</span>
         </Link>
         

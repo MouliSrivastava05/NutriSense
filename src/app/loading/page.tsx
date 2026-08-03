@@ -40,8 +40,8 @@ export default function LoadingPage() {
 
     const performAnalysis = async () => {
       try {
-        // 1. Image understanding & Ingredient extraction via Gemini (or Demo Data)
-        const geminiResult = await analyzeProduct(currentImages, geminiApiKey, demoMode);
+        // 1. Image understanding & Ingredient extraction via Gemini
+        const geminiResult = await analyzeProduct(currentImages);
         
         // 2. Compatibility Engine check
         const compatibilityResult = checkCompatibility(geminiResult, profile);
@@ -81,9 +81,9 @@ export default function LoadingPage() {
       <motion.div
         animate={{ scale: [1, 1.1, 1] }}
         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        className="h-24 w-24 rounded-full bg-gradient-to-tr from-primary to-emerald-400 flex items-center justify-center shadow-lg shadow-primary/20 mb-8"
+        className="h-24 w-24 rounded-full bg-white flex items-center justify-center shadow-sm mb-8 overflow-hidden"
       >
-        <Leaf className="h-10 w-10 text-white" />
+        <img src="/logo.png" alt="NutriSense Logo" className="w-full h-full object-cover" />
       </motion.div>
 
       <div className="h-12 flex items-center justify-center">

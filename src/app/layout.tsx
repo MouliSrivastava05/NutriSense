@@ -30,8 +30,8 @@ export default function RootLayout({
       <body className={`${manrope.variable} ${inter.variable} antialiased min-h-screen flex flex-col font-sans`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
-          enableSystem
+          defaultTheme="light"
+          forcedTheme="light"
           disableTransitionOnChange
         >
           <Navbar />

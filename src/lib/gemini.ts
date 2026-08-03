@@ -30,19 +30,17 @@ const mockDemoData: GeminiExtractionResult = {
 };
 
 export async function analyzeProduct(
-  base64Images: string[], 
-  apiKey: string, 
-  demoMode: boolean
+  base64Images: string[]
 ): Promise<GeminiExtractionResult> {
-  if (demoMode || !apiKey) {
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    return mockDemoData;
+  const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+  
+  if (!apiKey) {
+    throw new Error("Missing NEXT_PUBLIC_GEMINI_API_KEY in environment variables.");
   }
 
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
 
     const prompt = `
       Analyze these images of a skincare or cosmetic product.

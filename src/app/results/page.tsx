@@ -109,7 +109,7 @@ function ResultsContent() {
             </div>
             <div>
               <div className="flex justify-between text-xs uppercase tracking-wider mb-2">
-                <span className="text-muted-foreground">Allergy Risk</span>
+                <span className="text-muted-foreground">Allergen Free</span>
                 <span>{result.subscores.allergyRisk}%</span>
               </div>
               <Progress value={result.subscores.allergyRisk} className="h-[2px] bg-border" />
