@@ -3,6 +3,41 @@ import { GeminiExtractionResult } from "./gemini";
 
 // Helper knowledge base for deterministic checks
 const INGREDIENT_DB: Record<string, { purpose: string, benefits: string[], risks: string[], badFor: string[], goodFor: string[] }> = {
+  "Whey Protein Isolate": {
+    purpose: "Muscle recovery & growth",
+    benefits: ["High protein content", "Fast absorption"],
+    risks: ["Can cause digestive issues in lactose intolerant individuals"],
+    badFor: ["Vegan", "Dairy-Free"],
+    goodFor: ["Muscle Gain", "High Protein"]
+  },
+  "Peanuts": {
+    purpose: "Energy and fat source",
+    benefits: ["Healthy fats", "Protein"],
+    risks: ["Severe allergen for some"],
+    badFor: ["Nut Allergy"],
+    goodFor: ["Keto", "High Energy"]
+  },
+  "Cane Sugar": {
+    purpose: "Sweetener",
+    benefits: ["Quick energy"],
+    risks: ["Spikes blood sugar", "Contributes to weight gain"],
+    badFor: ["Diabetes", "Keto"],
+    goodFor: []
+  },
+  "Aspartame": {
+    purpose: "Artificial Sweetener",
+    benefits: ["Zero calories"],
+    risks: ["May cause headaches in some individuals"],
+    badFor: ["Clean Eating"],
+    goodFor: ["Keto", "Diabetes"]
+  },
+  "Caffeine": {
+    purpose: "Stimulant",
+    benefits: ["Increases alertness", "Boosts metabolism"],
+    risks: ["Can cause anxiety, jitteriness, or insomnia"],
+    badFor: ["Heart Disease", "Hypertension", "Insomnia"],
+    goodFor: ["Focus", "Pre-workout"]
+  },
   "Niacinamide": {
     purpose: "Strengthens skin barrier",
     benefits: ["Oil control", "Brightening", "Reduces acne"],
@@ -17,26 +52,12 @@ const INGREDIENT_DB: Record<string, { purpose: string, benefits: string[], risks
     badFor: ["Sensitive", "Eczema", "Rosacea", "Fragrance"],
     goodFor: []
   },
-  "Glycerin": {
-    purpose: "Hydration",
-    benefits: ["Draws moisture to skin"],
-    risks: [],
-    badFor: [],
-    goodFor: ["Dry", "Dryness"]
-  },
   "Ceramide NP": {
     purpose: "Skin barrier repair",
     benefits: ["Moisture retention", "Protection"],
     risks: [],
     badFor: [],
     goodFor: ["Dry", "Sensitive", "Eczema"]
-  },
-  "Phenoxyethanol": {
-    purpose: "Preservative",
-    benefits: ["Prevents bacterial growth"],
-    risks: ["Can cause allergic reactions in rare cases"],
-    badFor: [],
-    goodFor: []
   }
 };
 
@@ -47,7 +68,7 @@ export function checkCompatibility(
   let safetyScore = 100;
   let effectivenessScore = 100;
   let allergyScore = 100;
-  let skinMatchScore = 100;
+  let healthMatchScore = 100;
 
   const ingredientsDetails: IngredientDetail[] = extracted.ingredients.map(ing => {
     // Default fallback
@@ -64,11 +85,14 @@ export function checkCompatibility(
     let reason = "Generally safe based on your profile.";
     
     // 1. Check Allergies
-    const isAllergen = profile.allergies.allergens.some(a => 
-      ing.name.toLowerCase().includes(a.toLowerCase()) || 
-      ing.category.toLowerCase().includes(a.toLowerCase()) ||
-      dbInfo.badFor.includes(a)
-    );
+    const isAllergen = profile.allergies.allergens.some(a => {
+      // Normalize to catch singular forms of plural allergens (e.g. "Parabens" matches "Methylparaben")
+      const searchStr = a.toLowerCase().endsWith('s') ? a.toLowerCase().slice(0, -1) : a.toLowerCase();
+      
+      return ing.name.toLowerCase().includes(searchStr) || 
+             ing.category.toLowerCase().includes(searchStr) ||
+             dbInfo.badFor.some(b => b.toLowerCase() === a.toLowerCase() || b.toLowerCase() === searchStr);
+    });
 
     if (isAllergen) {
       status = "Avoid";
@@ -77,26 +101,25 @@ export function checkCompatibility(
       allergyScore -= 30;
       safetyScore -= 20;
     } 
-    // 2. Check Skin Type & Conditions Conflicts
+    // 2. Check Dietary & Health Conflicts
     else {
       const conflicts = dbInfo.badFor.filter(b => 
-        profile.skin.type === b || 
-        profile.skin.concerns.includes(b) || 
-        profile.health.conditions.includes(b)
+        profile.dietaryPreferences.some(pref => pref.toLowerCase() === b.toLowerCase()) || 
+        profile.health.conditions.some(cond => cond.toLowerCase() === b.toLowerCase())
       );
 
       if (conflicts.length > 0) {
         status = "Caution";
         safetyLevel = "Yellow";
-        reason = `May irritate your ${conflicts[0]} condition.`;
-        skinMatchScore -= 15;
+        reason = `May conflict with your ${conflicts[0]} requirement.`;
+        healthMatchScore -= 15;
       }
     }
 
     // Boost effectiveness for good matches
     const matches = dbInfo.goodFor.filter(g => 
-      profile.skin.type === g || 
-      profile.skin.concerns.includes(g)
+      profile.dietaryPreferences.some(pref => pref.toLowerCase() === g.toLowerCase()) || 
+      profile.health.conditions.some(cond => cond.toLowerCase() === g.toLowerCase())
     );
     if (matches.length > 0 && status !== "Avoid") {
       reason += ` Highly beneficial for your ${matches[0]}.`;
@@ -117,7 +140,7 @@ export function checkCompatibility(
   });
 
   // Calculate overall score
-  const avgSubscore = (safetyScore + effectivenessScore + allergyScore + skinMatchScore) / 4;
+  const avgSubscore = (safetyScore + effectivenessScore + allergyScore + healthMatchScore) / 4;
   const overallScore = Math.max(0, Math.min(100, Math.round(avgSubscore)));
 
   // Generate simple explanation
@@ -136,9 +159,9 @@ export function checkCompatibility(
   } else {
     const yellowFlags = ingredientsDetails.filter(i => i.status === "Caution");
     if (yellowFlags.length > 0) {
-      explanation += `Take note that ingredients like ${yellowFlags[0].name} might cause mild irritation given your skin profile.`;
+      explanation += `Take note that ingredients like ${yellowFlags[0].name} might cause issues given your health profile.`;
     } else {
-      explanation += `The ingredients align well with your health and skin needs.`;
+      explanation += `The ingredients align well with your dietary and health needs.`;
     }
   }
 
@@ -153,7 +176,7 @@ export function checkCompatibility(
       safety: Math.max(0, safetyScore),
       effectiveness: Math.max(0, effectivenessScore),
       allergyRisk: Math.max(0, allergyScore),
-      skinMatch: Math.max(0, skinMatchScore)
+      healthMatch: Math.max(0, healthMatchScore)
     },
     aiExplanation: explanation,
     ingredients: ingredientsDetails,

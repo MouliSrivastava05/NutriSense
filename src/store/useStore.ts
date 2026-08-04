@@ -6,23 +6,28 @@ export interface UserProfile {
     name: string;
     age: string;
     biologicalSex: string;
+    pregnancyStatus: string;
   };
   health: {
     conditions: string[];
+    deficiencies: string[];
+    familyHistory: string[];
   };
   allergies: {
     allergens: string[];
   };
   medications: string[];
-  skin: {
-    type: string;
-    concerns: string[];
-  };
+  dietaryPreferences: string[];
+  currentSupplements: string[];
   lifestyle: {
     smoking: string;
     alcohol: string;
     waterIntake: string;
     sleep: string;
+  };
+  fitness: {
+    primaryGoal: string;
+    activityLevel: string;
     exercise: string;
   };
   isProfileComplete: boolean;
@@ -50,7 +55,7 @@ export interface AnalysisResult {
     safety: number;
     effectiveness: number;
     allergyRisk: number;
-    skinMatch: number;
+    healthMatch: number;
   };
   aiExplanation: string;
   ingredients: IngredientDetail[];
@@ -84,12 +89,14 @@ interface AppState {
 }
 
 const initialProfile: UserProfile = {
-  personal: { name: '', age: '', biologicalSex: '' },
-  health: { conditions: [] },
+  personal: { name: '', age: '', biologicalSex: '', pregnancyStatus: '' },
+  health: { conditions: [], deficiencies: [], familyHistory: [] },
   allergies: { allergens: [] },
   medications: [],
-  skin: { type: '', concerns: [] },
-  lifestyle: { smoking: '', alcohol: '', waterIntake: '', sleep: '', exercise: '' },
+  dietaryPreferences: [],
+  currentSupplements: [],
+  lifestyle: { smoking: '', alcohol: '', waterIntake: '', sleep: '' },
+  fitness: { primaryGoal: '', activityLevel: '', exercise: '' },
   isProfileComplete: false,
 };
 

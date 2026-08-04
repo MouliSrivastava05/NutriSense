@@ -14,17 +14,17 @@ export interface GeminiExtractionResult {
 }
 
 const mockDemoData: GeminiExtractionResult = {
-  product_name: "Ultra Repair Face Moisturizer",
-  brand: "First Aid Beauty",
-  product_type: "Moisturizer",
+  product_name: "Chocolate Peanut Butter Protein Bar",
+  brand: "HealthySnacks",
+  product_type: "Snack Bar",
   ingredients: [
-    { name: "Water", category: "Base" },
-    { name: "Glycerin", category: "Humectant" },
-    { name: "Caprylic/Capric Triglyceride", category: "Emollient" },
-    { name: "Niacinamide", category: "Active" },
-    { name: "Ceramide NP", category: "Skin-Identical Ingredient" },
-    { name: "Phenoxyethanol", category: "Preservative" },
-    { name: "Fragrance", category: "Fragrance" },
+    { name: "Whey Protein Isolate", category: "Protein" },
+    { name: "Peanuts", category: "Nut" },
+    { name: "Cane Sugar", category: "Sweetener" },
+    { name: "Cocoa Butter", category: "Fat" },
+    { name: "Soy Lecithin", category: "Emulsifier" },
+    { name: "Sea Salt", category: "Mineral" },
+    { name: "Natural Flavors", category: "Flavor" },
   ],
   expiry_date: "2025-12-01"
 };
@@ -43,14 +43,14 @@ export async function analyzeProduct(
     const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
 
     const prompt = `
-      Analyze these images of a skincare or cosmetic product.
+      Analyze these images of a food, supplement, beverage, cosmetic, or general health product.
       Extract the following information and return ONLY a strict JSON object with this exact structure:
       {
         "product_name": "string (empty if not found)",
         "brand": "string (empty if not found)",
-        "product_type": "string (e.g., Serum, Moisturizer, Cleanser. empty if not found)",
+        "product_type": "string (e.g., Protein Powder, Serum, Snack Bar. empty if not found)",
         "ingredients": [
-          { "name": "normalized ingredient name (e.g., Niacinamide instead of Vitamin B3)", "category": "category (e.g., Active, Preservative, Humectant, Fragrance)" }
+          { "name": "normalized ingredient name", "category": "category (e.g., Sweetener, Preservative, Protein, Active, Nut)" }
         ],
         "expiry_date": "string (if visible, else null)"
       }

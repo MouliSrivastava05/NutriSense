@@ -111,7 +111,7 @@ export default function DashboardPage() {
     : 0;
 
   const avgMatch = history.length > 0 
-    ? Math.round(history.reduce((acc, curr) => acc + curr.subscores.skinMatch, 0) / history.length) 
+    ? Math.round(history.reduce((acc, curr) => acc + curr.subscores.healthMatch, 0) / history.length) 
     : 0;
 
   return (
@@ -125,8 +125,8 @@ export default function DashboardPage() {
               Hello{profile.personal.name ? `, ${profile.personal.name}` : ""}.
             </h1>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              Your profile is optimized for a {profile.skin.type?.toLowerCase() || "balanced"} skin type, 
-              focusing on {profile.skin.concerns?.length ? profile.skin.concerns.join(" and ").toLowerCase() : "general wellness"}.
+              Your profile is optimized for your {profile.dietaryPreferences?.length ? profile.dietaryPreferences.join(", ").toLowerCase() : "balanced"} dietary preferences, 
+              focusing on overall wellness and personal health compatibility.
             </p>
           </div>
           <Link href="/upload" className={cn(buttonVariants({ size: "lg" }), "rounded-full whitespace-nowrap")}>
@@ -140,7 +140,7 @@ export default function DashboardPage() {
             <div className="md:col-span-5 flex flex-col justify-center">
               <h2 className="font-heading text-2xl mb-4">Your Overview</h2>
               <p className="text-muted-foreground leading-relaxed">
-                You have analyzed {history.length} products. Based on your unique health and skin profile, your chosen products average a high safety score. Continue avoiding known allergens for the best results.
+                You have analyzed {history.length} products. Based on your unique health and dietary profile, your chosen products average a high safety score. Continue avoiding known allergens for the best results.
               </p>
             </div>
             <div className="md:col-span-6 md:col-start-7 flex flex-col justify-center space-y-8">
@@ -153,7 +153,7 @@ export default function DashboardPage() {
               </div>
               <div>
                 <div className="flex justify-between text-sm mb-2">
-                  <span className="font-medium text-foreground">Skin Type Match</span>
+                  <span className="font-medium text-foreground">Health & Diet Match</span>
                   <span className="text-muted-foreground">{avgMatch}%</span>
                 </div>
                 <Progress value={avgMatch} className="h-1 bg-secondary/50" />

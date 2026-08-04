@@ -17,7 +17,7 @@ export default function Home() {
         <div className="container px-4 md:px-6 relative z-10 text-center max-w-4xl mx-auto">
           <div className="inline-flex items-center rounded-full border px-3 py-1 text-sm text-primary mb-8 bg-white/50 backdrop-blur-sm">
             <span className="flex h-2 w-2 rounded-full bg-primary mr-2"></span>
-            Intelligence for your skincare
+            Intelligence for your health
           </div>
           
           <h1 className="font-heading text-5xl md:text-7xl font-semibold tracking-tight text-foreground leading-[1.1] mb-6">
@@ -58,7 +58,7 @@ export default function Home() {
               </div>
               <h3 className="font-heading text-xl font-medium">Analyze</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Cross-reference compounds with your unique health and skin profile.
+                Cross-reference compounds with your unique health and dietary profile.
               </p>
             </div>
             

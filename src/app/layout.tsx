@@ -17,7 +17,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "NutriSense | AI-Powered Product Compatibility",
-  description: "Upload product images and get instant personalized AI compatibility analysis for skincare and health products.",
+  description: "Upload product images and get instant personalized AI compatibility analysis for food, supplements, and health products.",
 };
 
 export default function RootLayout({

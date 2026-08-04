@@ -27,23 +27,31 @@ const profileSchema = z.object({
   name: z.string().optional(),
   age: z.string().min(1, "Age is required"),
   biologicalSex: z.string().min(1, "Biological sex is required"),
+  pregnancyStatus: z.string(),
   healthConditions: z.array(z.string()),
+  deficiencies: z.array(z.string()),
+  familyHistory: z.array(z.string()),
   allergies: z.array(z.string()),
   medications: z.string().optional(),
-  skinType: z.string().min(1, "Skin type is required"),
-  skinConcerns: z.array(z.string()),
+  dietaryPreferences: z.array(z.string()),
+  currentSupplements: z.array(z.string()),
   smoking: z.string(),
   alcohol: z.string(),
   waterIntake: z.string(),
   sleep: z.string(),
+  primaryGoal: z.string(),
+  activityLevel: z.string(),
   exercise: z.string(),
 });
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
 const HEALTH_CONDITIONS = ["Diabetes", "Hypertension", "Kidney Disease", "Liver Disease", "Asthma", "Thyroid Disorders", "PCOS", "Heart Disease", "Rosacea", "Acne", "Psoriasis", "Eczema"];
-const ALLERGIES = ["Fragrance", "Parabens", "Alcohol", "Sulfa", "Latex", "Nickel"];
-const SKIN_CONCERNS = ["Acne", "Pigmentation", "Wrinkles", "Dark Spots", "Dryness", "Redness"];
+const DEFICIENCIES = ["Iron", "Vitamin D", "Vitamin B12", "Magnesium", "Calcium", "Zinc", "Omega-3"];
+const FAMILY_HISTORY = ["Heart Disease", "Diabetes", "Hypertension", "Cancer", "Alzheimer's"];
+const ALLERGIES = ["Fragrance", "Parabens", "Alcohol", "Sulfa", "Latex", "Nickel", "Peanuts", "Dairy", "Gluten", "Soy", "Eggs", "Tree Nuts"];
+const DIETARY_PREFERENCES = ["Vegan", "Vegetarian", "Pescatarian", "Keto", "Paleo", "Gluten-Free", "Dairy-Free", "Halal", "Kosher"];
+const SUPPLEMENTS = ["Multivitamin", "Whey Protein", "Fish Oil", "Probiotics", "Creatine", "Vitamin D", "Iron", "Magnesium", "B-Complex", "Collagen"];
 
 export default function EditProfilePage() {
   const router = useRouter();
@@ -54,19 +62,24 @@ export default function EditProfilePage() {
   const { register, handleSubmit, control, formState: { errors } } = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      name: profile.personal.name || "",
-      age: profile.personal.age || "",
-      biologicalSex: profile.personal.biologicalSex || "",
-      healthConditions: profile.health.conditions || [],
-      allergies: profile.allergies.allergens || [],
-      medications: profile.medications.join(", ") || "",
-      skinType: profile.skin.type || "",
-      skinConcerns: profile.skin.concerns || [],
-      smoking: profile.lifestyle.smoking || "",
-      alcohol: profile.lifestyle.alcohol || "",
-      waterIntake: profile.lifestyle.waterIntake || "",
-      sleep: profile.lifestyle.sleep || "",
-      exercise: profile.lifestyle.exercise || "",
+      name: profile.personal?.name || "",
+      age: profile.personal?.age || "",
+      biologicalSex: profile.personal?.biologicalSex || "",
+      pregnancyStatus: profile.personal?.pregnancyStatus || "",
+      healthConditions: profile.health?.conditions || [],
+      deficiencies: profile.health?.deficiencies || [],
+      familyHistory: profile.health?.familyHistory || [],
+      allergies: profile.allergies?.allergens || [],
+      medications: profile.medications?.join(", ") || "",
+      dietaryPreferences: profile.dietaryPreferences || [],
+      currentSupplements: profile.currentSupplements || [],
+      smoking: profile.lifestyle?.smoking || "",
+      alcohol: profile.lifestyle?.alcohol || "",
+      waterIntake: profile.lifestyle?.waterIntake || "",
+      sleep: profile.lifestyle?.sleep || "",
+      primaryGoal: profile.fitness?.primaryGoal || "",
+      activityLevel: profile.fitness?.activityLevel || "",
+      exercise: profile.fitness?.exercise || "",
     },
   });
 
@@ -76,16 +89,21 @@ export default function EditProfilePage() {
 
   const onSubmit = (data: ProfileFormValues) => {
     setProfile({
-      personal: { name: data.name || "", age: data.age, biologicalSex: data.biologicalSex },
-      health: { conditions: data.healthConditions },
+      personal: { name: data.name || "", age: data.age, biologicalSex: data.biologicalSex, pregnancyStatus: data.pregnancyStatus },
+      health: { conditions: data.healthConditions, deficiencies: data.deficiencies, familyHistory: data.familyHistory },
       allergies: { allergens: data.allergies },
       medications: data.medications ? data.medications.split(",").map((m) => m.trim()) : [],
-      skin: { type: data.skinType, concerns: data.skinConcerns },
+      dietaryPreferences: data.dietaryPreferences,
+      currentSupplements: data.currentSupplements,
       lifestyle: {
         smoking: data.smoking,
         alcohol: data.alcohol,
         waterIntake: data.waterIntake,
         sleep: data.sleep,
+      },
+      fitness: {
+        primaryGoal: data.primaryGoal,
+        activityLevel: data.activityLevel,
         exercise: data.exercise,
       },
       isProfileComplete: true,
@@ -140,6 +158,25 @@ export default function EditProfilePage() {
                     )}
                   />
                   {errors.biologicalSex && <p className="text-sm text-destructive">{errors.biologicalSex.message}</p>}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="pregnancyStatus">Pregnancy / Nursing Status</Label>
+                  <Controller
+                    control={control}
+                    name="pregnancyStatus"
+                    render={({ field }) => (
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select status (Optional)" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Not Applicable">Not Applicable</SelectItem>
+                          <SelectItem value="Pregnant">Pregnant</SelectItem>
+                          <SelectItem value="Nursing">Nursing</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
                 </div>
               </div>
             </CardContent>
@@ -207,6 +244,62 @@ export default function EditProfilePage() {
                 </div>
               </div>
 
+              <div className="space-y-3">
+                <Label>Known Nutritional Deficiencies</Label>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {DEFICIENCIES.map((item) => (
+                    <div key={item} className="flex items-center space-x-2">
+                      <Controller
+                        name="deficiencies"
+                        control={control}
+                        render={({ field }) => (
+                          <Checkbox
+                            id={`def-${item}`}
+                            checked={field.value.includes(item)}
+                            onCheckedChange={(checked) => {
+                              return checked
+                                ? field.onChange([...field.value, item])
+                                : field.onChange(field.value.filter((val) => val !== item));
+                            }}
+                          />
+                        )}
+                      />
+                      <label htmlFor={`def-${item}`} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                        {item}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <Label>Family Medical History</Label>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {FAMILY_HISTORY.map((item) => (
+                    <div key={item} className="flex items-center space-x-2">
+                      <Controller
+                        name="familyHistory"
+                        control={control}
+                        render={({ field }) => (
+                          <Checkbox
+                            id={`fam-${item}`}
+                            checked={field.value.includes(item)}
+                            onCheckedChange={(checked) => {
+                              return checked
+                                ? field.onChange([...field.value, item])
+                                : field.onChange(field.value.filter((val) => val !== item));
+                            }}
+                          />
+                        )}
+                      />
+                      <label htmlFor={`fam-${item}`} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                        {item}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="medications">Current Medications (Comma separated)</Label>
                 <Textarea id="medications" {...register("medications")} placeholder="e.g. Accutane, Metformin" />
@@ -216,55 +309,59 @@ export default function EditProfilePage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Skin Profile</CardTitle>
-              <CardDescription>Tell us about your skin to evaluate cosmetic compatibility.</CardDescription>
+              <CardTitle>Dietary Preferences</CardTitle>
+              <CardDescription>Tell us about your diet to evaluate food and supplement compatibility.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="skinType">Skin Type</Label>
-                <Controller
-                  control={control}
-                  name="skinType"
-                  render={({ field }) => (
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select skin type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Dry">Dry</SelectItem>
-                        <SelectItem value="Oily">Oily</SelectItem>
-                        <SelectItem value="Combination">Combination</SelectItem>
-                        <SelectItem value="Sensitive">Sensitive</SelectItem>
-                        <SelectItem value="Normal">Normal</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-                {errors.skinType && <p className="text-sm text-destructive">{errors.skinType.message}</p>}
-              </div>
-
               <div className="space-y-3">
-                <Label>Skin Concerns</Label>
+                <Label>Dietary Choices</Label>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {SKIN_CONCERNS.map((concern) => (
-                    <div key={concern} className="flex items-center space-x-2">
+                  {DIETARY_PREFERENCES.map((pref) => (
+                    <div key={pref} className="flex items-center space-x-2">
                       <Controller
-                        name="skinConcerns"
+                        name="dietaryPreferences"
                         control={control}
                         render={({ field }) => (
                           <Checkbox
-                            id={`skin-${concern}`}
-                            checked={field.value.includes(concern)}
+                            id={`diet-${pref}`}
+                            checked={field.value.includes(pref)}
                             onCheckedChange={(checked) => {
                               return checked
-                                ? field.onChange([...field.value, concern])
-                                : field.onChange(field.value.filter((val) => val !== concern));
+                                ? field.onChange([...field.value, pref])
+                                : field.onChange(field.value.filter((val) => val !== pref));
                             }}
                           />
                         )}
                       />
-                      <label htmlFor={`skin-${concern}`} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                        {concern}
+                      <label htmlFor={`diet-${pref}`} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                        {pref}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-3 mt-6">
+                <Label>Current Supplements Taken</Label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {SUPPLEMENTS.map((item) => (
+                    <div key={item} className="flex items-center space-x-2">
+                      <Controller
+                        name="currentSupplements"
+                        control={control}
+                        render={({ field }) => (
+                          <Checkbox
+                            id={`supp-${item}`}
+                            checked={field.value.includes(item)}
+                            onCheckedChange={(checked) => {
+                              return checked
+                                ? field.onChange([...field.value, item])
+                                : field.onChange(field.value.filter((val) => val !== item));
+                            }}
+                          />
+                        )}
+                      />
+                      <label htmlFor={`supp-${item}`} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                        {item}
                       </label>
                     </div>
                   ))}
@@ -348,8 +445,57 @@ export default function EditProfilePage() {
                     )}
                   />
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Fitness & Goals</CardTitle>
+              <CardDescription>Tell us about your fitness routines and primary objectives.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Exercise</Label>
+                  <Label>Primary Health Goal</Label>
+                  <Controller
+                    control={control}
+                    name="primaryGoal"
+                    render={({ field }) => (
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Weight Loss">Weight Loss</SelectItem>
+                          <SelectItem value="Muscle Gain">Muscle Gain</SelectItem>
+                          <SelectItem value="Maintenance">Maintenance</SelectItem>
+                          <SelectItem value="Better Sleep">Better Sleep</SelectItem>
+                          <SelectItem value="Energy Boost">Energy Boost</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Daily Activity Level</Label>
+                  <Controller
+                    control={control}
+                    name="activityLevel"
+                    render={({ field }) => (
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Sedentary">Sedentary</SelectItem>
+                          <SelectItem value="Lightly Active">Lightly Active</SelectItem>
+                          <SelectItem value="Moderately Active">Moderately Active</SelectItem>
+                          <SelectItem value="Very Active">Very Active</SelectItem>
+                          <SelectItem value="Athlete">Athlete</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Exercise Frequency</Label>
                   <Controller
                     control={control}
                     name="exercise"

@@ -171,10 +171,10 @@ function ResultsContent() {
             </div>
             <div>
               <div className="flex justify-between text-xs uppercase tracking-wider mb-2">
-                <span className="text-muted-foreground">Skin Match</span>
-                <span>{result.subscores.skinMatch}%</span>
+                <span className="text-muted-foreground">Health Match</span>
+                <span>{result.subscores.healthMatch}%</span>
               </div>
-              <Progress value={result.subscores.skinMatch} className="h-[2px] bg-border" />
+              <Progress value={result.subscores.healthMatch} className="h-[2px] bg-border" />
             </div>
           </div>
         </div>
