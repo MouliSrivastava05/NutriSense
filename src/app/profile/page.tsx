@@ -145,7 +145,7 @@ export default function EditProfilePage() {
                     control={control}
                     name="biologicalSex"
                     render={({ field }) => (
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select sex" />
                         </SelectTrigger>
@@ -165,7 +165,7 @@ export default function EditProfilePage() {
                     control={control}
                     name="pregnancyStatus"
                     render={({ field }) => (
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select status (Optional)" />
                         </SelectTrigger>
@@ -383,7 +383,7 @@ export default function EditProfilePage() {
                     control={control}
                     name="smoking"
                     render={({ field }) => (
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="Never">Never</SelectItem>
@@ -400,7 +400,7 @@ export default function EditProfilePage() {
                     control={control}
                     name="alcohol"
                     render={({ field }) => (
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="Never">Never</SelectItem>
@@ -417,7 +417,7 @@ export default function EditProfilePage() {
                     control={control}
                     name="waterIntake"
                     render={({ field }) => (
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="Low">Low (&lt; 1L/day)</SelectItem>
@@ -434,7 +434,7 @@ export default function EditProfilePage() {
                     control={control}
                     name="sleep"
                     render={({ field }) => (
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="Poor">Poor (&lt; 5 hours)</SelectItem>
@@ -462,7 +462,7 @@ export default function EditProfilePage() {
                     control={control}
                     name="primaryGoal"
                     render={({ field }) => (
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="Weight Loss">Weight Loss</SelectItem>
@@ -481,7 +481,7 @@ export default function EditProfilePage() {
                     control={control}
                     name="activityLevel"
                     render={({ field }) => (
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="Sedentary">Sedentary</SelectItem>
@@ -500,7 +500,7 @@ export default function EditProfilePage() {
                     control={control}
                     name="exercise"
                     render={({ field }) => (
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="None">None</SelectItem>
